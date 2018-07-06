@@ -10,6 +10,71 @@ from market_model_builder import MarketModelBuilder
 
 BASE_DIR = dirname(__file__)
 
+from google.oauth2 import service_account
+
+SCOPES = ['https://www.googleapis.com/auth/drive']
+SERVICE_ACCOUNT_FILE = '/content/stock_market_reinforcement_learning/cert.json'
+
+credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+#print(credentials)
+
+from googleapiclient.http import MediaFileUpload
+from googleapiclient.discovery import build
+drive_service = build('drive', 'v3', credentials=credentials)
+def savemodel(name):
+  file_metadata = {
+  'name': name+'.json',
+  'mimeType': 'text/plain'
+  }
+  #obj.to_csv("/tmp/"+name+".csv",encoding = 'utf-8')
+  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".json",
+                        mimetype='text/plain',
+                        resumable=True)
+  created = drive_service.files().update(body=file_metadata,
+                                       media_body=media,
+                                       fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U').execute()
+  print('Filename:{} File ID: {}'.format(name,created.get('id')))
+  file_metadata = {
+  'name': name+'.h5',
+  'mimeType': 'text/plain'
+  }
+  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".h5",
+                        mimetype='text/plain',
+                        resumable=True)
+  created1 = drive_service.files().update(body=file_metadata,
+                                       media_body=media,
+                                       fileId='1Z9UC8wGmwu4PL6bRGQiwhuzEJlrU3cUd').execute()
+  print('Filename:{} File ID: {}'.format(name,created1.get('id')))
+  return created.get('id'),created1.get('id')
+
+def loaddate(id,filename):
+  request = drive_service.files().get_media(fileId=id)
+  #downloaded = io.BytesIO()
+  fh = io.FileIO("/content/stock_market_reinforcement_learning/models/"+filename, 'wb')
+  downloader = MediaIoBaseDownload(fh, request)
+  done = False
+  while done is False:
+    # _ is a placeholder for a progress object that we ignore.
+    # (Our file is small, so we skip reporting progress.)
+    _, done = downloader.next_chunk()
+
+  fh.seek(0)
+
+  #print('Downloaded file contents are: {}'.format(downloaded.read()))
+  return fh
+
+
+def restoremodle():
+  results = drive_service.files().list(
+      pageSize=10, fields="nextPageToken, files(id, name)").execute()
+  items = results.get('files', [])
+  if not items:
+      print('No files found.')
+  else:
+      print('Files:')
+      for item in items:
+        loaddate(item['id'],item['name'])
+        print('restoring model {0} ({1})'.format(item['name'], item['id']))
 
 class bcolors:
     HEADER = "\033[95m"
@@ -82,9 +147,9 @@ if __name__ == "__main__":
 
     f.close()
 
-    env = MarketEnv(target_symbols=list(instruments.keys()), input_symbols=[], 
-        start_date="1980-01-01", 
-        end_date="2018-06-29", 
+    env = MarketEnv(target_symbols=list(instruments.keys()), input_symbols=[],
+        start_date="1980-01-01",
+        end_date="2018-06-29",
         sudden_death=-1.0)
 
     # parameters
