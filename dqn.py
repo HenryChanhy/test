@@ -23,52 +23,52 @@ from googleapiclient.discovery import build
 from datetime import datetime
 drive_service = build('drive', 'v3', credentials=credentials)
 def savemodel(name):
-  file_metadata = {
-  'name': name+'.json',
-  'mimeType': 'text/plain',
-  'modifiedTime': datetime.utcnow().isoformat() + 'Z'
-  }
-  #obj.to_csv("/tmp/"+name+".csv",encoding = 'utf-8')
-  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".json",
-                        mimetype='text/plain',
-                        resumable=True)
-  created = drive_service.files().update(body=file_metadata,
-                                       media_body=media,
-                                       fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U',
-                                       fields='id, modifiedTime').execute()
-  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created.get('id'),created.get('modifiedTime')))
-  file_metadata = {
-  'name': name+'.h5',
-  'mimeType': 'text/plain',
-  'modifiedTime': datetime.utcnow().isoformat() + 'Z'
-  }
-  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".h5",
-                        mimetype='text/plain',
-                        resumable=True)
-  created1 = drive_service.files().update(body=file_metadata,
-                                       media_body=media,
-                                       fileId='1Z9UC8wGmwu4PL6bRGQiwhuzEJlrU3cUd',
-                                       fields='id, modifiedTime').execute()
-  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created1.get('id'),created1.get('modifiedTime')))
-  return created.get('id'),created1.get('id')
+	  file_metadata = {
+	  'name': name+'.json',
+	  'mimeType': 'text/plain',
+	  'modifiedTime': datetime.utcnow().isoformat() + 'Z'
+	  }
+	  #obj.to_csv("/tmp/"+name+".csv",encoding = 'utf-8')
+	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".json",
+	                        mimetype='text/plain',
+	                        resumable=True)
+	  created = drive_service.files().update(body=file_metadata,
+	                                       media_body=media,
+	                                       fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U',
+	                                       fields='id, modifiedTime').execute()
+	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created.get('id'),created.get('modifiedTime')))
+	  file_metadata = {
+	  'name': name+'.h5',
+	  'mimeType': 'text/plain',
+	  'modifiedTime': datetime.utcnow().isoformat() + 'Z'
+	  }
+	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".h5",
+	                        mimetype='text/plain',
+	                        resumable=True)
+	  created1 = drive_service.files().update(body=file_metadata,
+	                                       media_body=media,
+	                                       fileId='1Z9UC8wGmwu4PL6bRGQiwhuzEJlrU3cUd',
+	                                       fields='id, modifiedTime').execute()
+	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created1.get('id'),created1.get('modifiedTime')))
+	  return created.get('id'),created1.get('id')
 
 def loaddate(id,filename):
-	import io
-  from googleapiclient.http import MediaIoBaseDownload
-  request = drive_service.files().get_media(fileId=id)
-  #downloaded = io.BytesIO()
-  fh = io.FileIO("/content/stock_market_reinforcement_learning/models/"+filename, 'wb')
-  downloader = MediaIoBaseDownload(fh, request)
-  done = False
-  while done is False:
-    # _ is a placeholder for a progress object that we ignore.
-    # (Our file is small, so we skip reporting progress.)
-    _, done = downloader.next_chunk()
+		import io
+	  from googleapiclient.http import MediaIoBaseDownload
+	  request = drive_service.files().get_media(fileId=id)
+	  #downloaded = io.BytesIO()
+	  fh = io.FileIO("/content/stock_market_reinforcement_learning/models/"+filename, 'wb')
+	  downloader = MediaIoBaseDownload(fh, request)
+	  done = False
+	  while done is False:
+		    # _ is a placeholder for a progress object that we ignore.
+		    # (Our file is small, so we skip reporting progress.)
+		    _, done = downloader.next_chunk()
 
-  fh.seek(0)
+	  fh.seek(0)
 
-  #print('Downloaded file contents are: {}'.format(downloaded.read()))
-  return fh
+	  #print('Downloaded file contents are: {}'.format(downloaded.read()))
+	  return fh
 
 
 def restoremodle():
@@ -79,8 +79,8 @@ def restoremodle():
   else:
       print('Files:')
       for item in items:
-        loaddate(item['id'],item['name'])
-        print('restoring model {0} ({1}) {2}'.format(item['name'], item['id'], item['modifiedTime']))
+	        loaddate(item['id'],item['name'])
+	        print('restoring model {0} ({1}) {2}'.format(item['name'], item['id'], item['modifiedTime']))
 
 class bcolors:
     HEADER = "\033[95m"
