@@ -24,7 +24,8 @@ drive_service = build('drive', 'v3', credentials=credentials)
 def savemodel(name):
   file_metadata = {
   'name': name+'.json',
-  'mimeType': 'text/plain'
+  'mimeType': 'text/plain',
+  'modifiedTime': datetime.utcnow().isoformat() + 'Z'
   }
   #obj.to_csv("/tmp/"+name+".csv",encoding = 'utf-8')
   media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".json",
@@ -36,7 +37,8 @@ def savemodel(name):
   print('Filename:{} File ID: {}'.format(name,created.get('id')))
   file_metadata = {
   'name': name+'.h5',
-  'mimeType': 'text/plain'
+  'mimeType': 'text/plain',
+  'modifiedTime': datetime.utcnow().isoformat() + 'Z'
   }
   media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".h5",
                         mimetype='text/plain',
