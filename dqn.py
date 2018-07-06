@@ -17,7 +17,8 @@ SERVICE_ACCOUNT_FILE = '/content/stock_market_reinforcement_learning/cert.json'
 
 credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 #print(credentials)
-
+import io
+from googleapiclient.http import MediaIoBaseDownload
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.discovery import build
 from datetime import datetime
@@ -53,8 +54,6 @@ def savemodel(name):
 	  return created.get('id'),created1.get('id')
 
 def loaddate(id,filename):
-		import io
-	  from googleapiclient.http import MediaIoBaseDownload
 	  request = drive_service.files().get_media(fileId=id)
 	  #downloaded = io.BytesIO()
 	  fh = io.FileIO("/content/stock_market_reinforcement_learning/models/"+filename, 'wb')
