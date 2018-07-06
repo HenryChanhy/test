@@ -34,8 +34,9 @@ def savemodel(name):
                         resumable=True)
   created = drive_service.files().update(body=file_metadata,
                                        media_body=media,
-                                       fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U').execute()
-  print('Filename:{} File ID: {}'.format(name,created.get('id')))
+                                       fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U',
+                                       fields='id, modifiedTime').execute()
+  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created.get('id'),created.get('modifiedTime')))
   file_metadata = {
   'name': name+'.h5',
   'mimeType': 'text/plain',
@@ -46,8 +47,9 @@ def savemodel(name):
                         resumable=True)
   created1 = drive_service.files().update(body=file_metadata,
                                        media_body=media,
-                                       fileId='1Z9UC8wGmwu4PL6bRGQiwhuzEJlrU3cUd').execute()
-  print('Filename:{} File ID: {}'.format(name,created1.get('id')))
+                                       fileId='1Z9UC8wGmwu4PL6bRGQiwhuzEJlrU3cUd',
+                                       fields='id, modifiedTime').execute()
+  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created1.get('id'),created1.get('modifiedTime')))
   return created.get('id'),created1.get('id')
 
 def loaddate(id,filename):
@@ -70,7 +72,7 @@ def loaddate(id,filename):
 
 
 def restoremodle():
-  results = drive_service.files().list(pageSize=10, fields="nextPageToken, files(id, name)").execute()
+  results = drive_service.files().list(pageSize=10, fields="nextPageToken, files(id, name, modifiedTime)").execute()
   items = results.get('files', [])
   if not items:
       print('No files found.')
@@ -78,7 +80,7 @@ def restoremodle():
       print('Files:')
       for item in items:
         loaddate(item['id'],item['name'])
-        print('restoring model {0} ({1})'.format(item['name'], item['id']))
+        print('restoring model {0} ({1}) {2}'.format(item['name'], item['id'], item['modifiedTime']))
 
 class bcolors:
     HEADER = "\033[95m"
