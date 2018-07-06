@@ -48,6 +48,8 @@ def savemodel(name):
   return created.get('id'),created1.get('id')
 
 def loaddate(id,filename):
+	import io
+  from googleapiclient.http import MediaIoBaseDownload
   request = drive_service.files().get_media(fileId=id)
   #downloaded = io.BytesIO()
   fh = io.FileIO("/content/stock_market_reinforcement_learning/models/"+filename, 'wb')
@@ -65,8 +67,7 @@ def loaddate(id,filename):
 
 
 def restoremodle():
-  results = drive_service.files().list(
-      pageSize=10, fields="nextPageToken, files(id, name)").execute()
+  results = drive_service.files().list(pageSize=10, fields="nextPageToken, files(id, name)").execute()
   items = results.get('files', [])
   if not items:
       print('No files found.')
@@ -136,7 +137,7 @@ class ExperienceReplay(object):
 if __name__ == "__main__":
     portfolio_list = argv[1]
     model_filename = argv[2] if len(argv) > 2 else None
-
+    restoremodle()
     instruments = {}
     f = codecs.open(portfolio_list, "r", "utf-8")
 
