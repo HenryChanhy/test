@@ -37,7 +37,7 @@ def savemodel(name):
 	                                       media_body=media,
 	                                       fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U',
 	                                       fields='id, modifiedTime').execute()
-	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created.get('id'),created.get('modifiedTime')))
+	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.json',created.get('id'),created.get('modifiedTime')))
 	  file_metadata = {
 	  'name': name+'.h5',
 	  'mimeType': 'text/plain',
@@ -76,7 +76,7 @@ def restoremodle():
   if not items:
       print('No files found.')
   else:
-      print('Files:')
+      print('restoring Files:')
       for item in items:
 	        loaddate(item['id'],item['name'])
 	        print('restoring model {0} ({1}) {2}'.format(item['name'], item['id'], item['modifiedTime']))
@@ -181,10 +181,12 @@ if __name__ == "__main__":
         # get initial input
         input_t = env.reset()
         cumReward = 0
-
+        steps = 0
+        btime=datetime.datetime.now()
         while not game_over:
             input_tm1 = input_t
             isRandom = False
+            steps += 1
 
             # get next action
             if random.rand() <= epsilon:
@@ -195,7 +197,7 @@ if __name__ == "__main__":
                 q = model.predict(input_tm1)
                 action = argmax(q[0])
 
-                #print "  ".join(["%s:%.2f" % (l, i) for l, i in zip(env.actions, q[0].tolist())])
+                print("  ".join(["%s:%.2f" % (l, i) for l, i in zip(env.actions, q[0].tolist())]))
                 if nan in q:
                     print("I found NaN!")
                     exit()
@@ -221,7 +223,10 @@ if __name__ == "__main__":
         if cumReward > 0 and game_over:
             win_cnt += 1
 
-        print(("Epoch {:03d}/{} | Loss {:.4f} | Win count {} | Epsilon {:.4f}".format(e, epoch, loss, win_cnt, epsilon)))
+        etime=datetime.datetime.now()
+        deltasec=(etime-btime).total_seconds()
+        stepspeed=steps/deltasec
+        print(("Epoch {:03d}/{} | Loss {:.4f} | Win count {} | Epsilon {:.4f} | Steps/sec {}".format(e, epoch, loss, win_cnt, epsilon, stepspeed)))
         # Save trained model weights and architecture, this will be used by the visualization code
         model_json = model.to_json()
         with open(join(BASE_DIR, "models", model_filename + ".json"), "w") as json_file:
