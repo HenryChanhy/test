@@ -1,5 +1,6 @@
 import tushare as ts
 import datetime
+from sys import argv
 from os.path import join, dirname, isfile
 BASE_DIR = dirname(__file__)
 
@@ -21,6 +22,7 @@ def savestock(stocks):
 		#	print('stock: {} exist, querying passed {} of {} total'.format(code,i,len(stocks)))
 
 if __name__ == "__main__":
+	nums = argv[1] if len(argv) > 1 else 100
 	stock_base = ts.get_stock_basics()
-	stock_base.sample(n=100).to_csv('cn_stocksample.csv',columns=['name'])
+	stock_base.sample(n=nums).to_csv('cn_stocksample.csv',columns=['name'],header=None)
 	#savestock(stock_base)
