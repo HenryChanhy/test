@@ -41,7 +41,7 @@ def savemodel(name):
 	  file_metadata = {
 	  'name': name+'.h5',
 	  'mimeType': 'text/plain',
-	  'modifiedTime': datetime.utcnow().isoformat() + 'Z'
+	  'modifiedTime': datetime.now().isoformat() + 'Z'
 	  }
 	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".h5",
 	                        mimetype='text/plain',
@@ -182,7 +182,7 @@ if __name__ == "__main__":
         input_t = env.reset()
         cumReward = 0
         steps = 0
-        btime=datetime.datetime.now()
+        btime=datetime.now()
         while not game_over:
             input_tm1 = input_t
             isRandom = False
@@ -223,7 +223,7 @@ if __name__ == "__main__":
         if cumReward > 0 and game_over:
             win_cnt += 1
 
-        etime=datetime.datetime.now()
+        etime=datetime.now()
         deltasec=(etime-btime).total_seconds()
         stepspeed=steps/deltasec
         print(("Epoch {:03d}/{} | Loss {:.4f} | Win count {} | Epsilon {:.4f} | Steps {} | Steps/sec {}".format(e, epoch, loss, win_cnt, epsilon, steps, stepspeed)))
