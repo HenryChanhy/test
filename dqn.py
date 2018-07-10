@@ -226,7 +226,7 @@ if __name__ == "__main__":
         etime=datetime.datetime.now()
         deltasec=(etime-btime).total_seconds()
         stepspeed=steps/deltasec
-        print(("Epoch {:03d}/{} | Loss {:.4f} | Win count {} | Epsilon {:.4f} | Steps/sec {}".format(e, epoch, loss, win_cnt, epsilon, stepspeed)))
+        print(("Epoch {:03d}/{} | Loss {:.4f} | Win count {} | Epsilon {:.4f} | Steps {} | Steps/sec {}".format(e, epoch, loss, win_cnt, epsilon, steps, stepspeed)))
         # Save trained model weights and architecture, this will be used by the visualization code
         model_json = model.to_json()
         with open(join(BASE_DIR, "models", model_filename + ".json"), "w") as json_file:
