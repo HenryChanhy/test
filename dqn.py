@@ -197,7 +197,7 @@ if __name__ == "__main__":
                 q = model.predict(input_tm1)
                 action = argmax(q[0])
 
-                print("  ".join(["%s:%.2f" % (l, i) for l, i in zip(env.actions, q[0].tolist())]))
+                print("predict: "+"  ".join(["%s:%.2f" % (l, i) for l, i in zip(env.actions, q[0].tolist())]))
                 if nan in q:
                     print("I found NaN!")
                     exit()
