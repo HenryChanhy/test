@@ -24,5 +24,6 @@ def savestock(stocks):
 if __name__ == "__main__":
 	nums = argv[1] if len(argv) > 1 else 100
 	stock_base = ts.get_stock_basics()
-	stock_base.sample(n=nums).to_csv('cn_stocksample.csv',columns=['name'],header=None)
+	#stock_base.sample(n=nums).to_csv('cn_stocksample.csv',columns=['name'],header=None)
+	stock_base.to_csv('cn_stocksample.csv',columns=['name'],header=None)
 	#savestock(stock_base)
