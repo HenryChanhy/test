@@ -3,7 +3,7 @@ from os.path import join, dirname
 import codecs
 from numpy import zeros, random, maximum, array, argmax, nan
 from keras.optimizers import SGD
-
+from keras.callbacks import TensorBoard
 from environment import MarketEnv
 from market_model_builder import MarketModelBuilder
 
@@ -174,6 +174,8 @@ if __name__ == "__main__":
     model = MarketModelBuilder(join(BASE_DIR, "models", "model.h5") if model_filename == None else join(BASE_DIR, "models", model_filename + ".h5")).getModel()
     sgd = SGD(lr = 0.001, decay = 1e-6, momentum = 0.9, nesterov = True)
     model.compile(loss='mse', optimizer='rmsprop')
+
+		tensorboard =TensorBoard(log_dir='./logs', histogram_freq=1, batch_size=1, write_graph=True, write_grads=True, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
     # Initialize experience replay object
     exp_replay = ExperienceReplay(max_memory = max_memory, discount = discount)
