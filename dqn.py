@@ -34,6 +34,7 @@ class LRTensorBoard(TensorBoard):
         super().on_epoch_end(epoch, logs)
 
 def savemodel(name):
+		items=[]
 	  file_metadata = {
 	  'name': name+'.json',
 	  'mimeType': 'text/plain',
@@ -57,6 +58,7 @@ def savemodel(name):
 	 			created = drive_service.files().create(body=file_metadata,
 	                                       media_body=media,
 	                                       fields='id, modifiedTime').execute()
+	  items.append({'name':file_metadata['name'],'id':created.get('id')})
 	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.json',created.get('id'),created.get('modifiedTime')))
 	  file_metadata = {
 	  'name': name+'.h5',
@@ -79,7 +81,8 @@ def savemodel(name):
 	                                       media_body=media,
 	                                       fields='id, modifiedTime').execute()
 	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created1.get('id'),created1.get('modifiedTime')))
-	  return created.get('id'),created1.get('id')
+	  items.append({'name':file_metadata['name'],'id':created1.get('id')})
+	  return items
 
 def loaddate(id,filename):
 	  request = drive_service.files().get_media(fileId=id)
@@ -275,5 +278,5 @@ if __name__ == "__main__":
         with open(join(BASE_DIR, "models", model_filename + ".json"), "w") as json_file:
             json_file.write(model_json)
         model.save_weights(join(BASE_DIR, "models", "model.h5") if model_filename == None else join(BASE_DIR, "models", model_filename + ".h5"), overwrite=True)
-        savemodel(model_filename)
+        models=savemodel(model_filename)
         epsilon = maximum(min_epsilon, epsilon * 0.99)
