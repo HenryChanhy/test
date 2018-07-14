@@ -23,7 +23,7 @@ def savestock(stocks):
 
 if __name__ == "__main__":
 	filename = argv[1] if len(argv) >1 else 'cn_stocksample.csv'
-	nums = argv[2] if len(argv) > 2 else None
+	nums = int(argv[2]) if len(argv) > 2 else None
 	stock_base = ts.get_stock_basics()
 	if nums == None:
 		stock_base.to_csv(filename,columns=['name'],header=None)
