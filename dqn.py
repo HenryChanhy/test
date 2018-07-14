@@ -35,11 +35,7 @@ class LRTensorBoard(TensorBoard):
 
 def savemodel(name):
 		items=[]
-	  file_metadata = {
-	  'name': name+'.json',
-	  'mimeType': 'text/plain',
-	  'modifiedTime': datetime.utcnow().isoformat() + 'Z'
-	  }
+	  file_metadata = {'name': name+'.json','mimeType': 'text/plain','modifiedTime': datetime.utcnow().isoformat() + 'Z'}
 	  #obj.to_csv("/tmp/"+name+".csv",encoding = 'utf-8')
 	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".json",
 	                        mimetype='text/plain',
