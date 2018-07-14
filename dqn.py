@@ -33,9 +33,12 @@ def savemodel(name):
 	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".json",
 	                        mimetype='text/plain',
 	                        resumable=True)
-	  created = drive_service.files().update(body=file_metadata,
+	  # created = drive_service.files().update(body=file_metadata,
+	  #                                      media_body=media,
+	  #                                      fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U',
+	  #                                      fields='id, modifiedTime').execute()
+	 	created = drive_service.files().insert(body=file_metadata,
 	                                       media_body=media,
-	                                       fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U',
 	                                       fields='id, modifiedTime').execute()
 	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.json',created.get('id'),created.get('modifiedTime')))
 	  file_metadata = {
@@ -46,9 +49,12 @@ def savemodel(name):
 	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".h5",
 	                        mimetype='text/plain',
 	                        resumable=True)
-	  created1 = drive_service.files().update(body=file_metadata,
+	  # created1 = drive_service.files().update(body=file_metadata,
+	  #                                      media_body=media,
+	  #                                      fileId='1zLpn4YKgwBBzPicaRguMOaJ3sAIZkC0W',
+	  #                                      fields='id, modifiedTime').execute()
+	  created1 = drive_service.files().insert(body=file_metadata,
 	                                       media_body=media,
-	                                       fileId='1zLpn4YKgwBBzPicaRguMOaJ3sAIZkC0W',
 	                                       fields='id, modifiedTime').execute()
 	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created1.get('id'),created1.get('modifiedTime')))
 	  return created.get('id'),created1.get('id')
@@ -204,6 +210,7 @@ if __name__ == "__main__":
 
             # apply action, get rewards and new state
             input_t, reward, game_over, info = env.step(action)
+            print("input_t:{},reward:{}, game_over:{}, info:{}".format(input_t, reward, game_over, info))
             cumReward += reward
 
             if env.actions[action] == "LONG" or env.actions[action] == "SHORT":
