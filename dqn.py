@@ -44,7 +44,7 @@ def savemodel(name):
 	  #                                      fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U',
 	  #                                      fields='id, modifiedTime').execute()
 	  if newmodel :
-	 			created = drive_service.files().insert(body=file_metadata,
+	 			created = drive_service.files().create(body=file_metadata,
 	                                       media_body=media,
 	                                       fields='id, modifiedTime').execute()
 	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.json',created.get('id'),created.get('modifiedTime')))
@@ -65,7 +65,7 @@ def savemodel(name):
 	  #                                      fileId='1zLpn4YKgwBBzPicaRguMOaJ3sAIZkC0W',
 	  #                                      fields='id, modifiedTime').execute()
 	  if newmodel :
-	  		created1 = drive_service.files().insert(body=file_metadata,
+	  		created1 = drive_service.files().create(body=file_metadata,
 	                                       media_body=media,
 	                                       fields='id, modifiedTime').execute()
 	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created1.get('id'),created1.get('modifiedTime')))
