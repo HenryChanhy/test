@@ -22,8 +22,12 @@ def savestock(stocks):
 		#	print('stock: {} exist, querying passed {} of {} total'.format(code,i,len(stocks)))
 
 if __name__ == "__main__":
-	nums = argv[1] if len(argv) > 1 else 100
+	filename = argv[1] if len(argv >1) else 'cn_stocksample.csv'
+	nums = argv[2] if len(argv) > 2 else None
 	stock_base = ts.get_stock_basics()
-	#stock_base.sample(n=nums).to_csv('cn_stocksample.csv',columns=['name'],header=None)
-	stock_base.to_csv('cn_stocksample.csv',columns=['name'],header=None)
+	if nums == None:
+		stock_base.to_csv(filename,columns=['name'],header=None)
+	else:
+		stock_base.sample(n=nums).to_csv(filename,columns=['name'],header=None)
+	#stock_base.to_csv('cn_stocksample.csv',columns=['name'],header=None)
 	#savestock(stock_base)
