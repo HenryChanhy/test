@@ -3,6 +3,7 @@ from os.path import join, dirname
 import codecs
 from numpy import zeros, random, maximum, array, argmax, nan
 from keras.optimizers import SGD
+from keras import backend as K
 from keras.callbacks import TensorBoard
 from environment import MarketEnv
 from market_model_builder import MarketModelBuilder
@@ -23,6 +24,15 @@ from googleapiclient.http import MediaFileUpload
 from googleapiclient.discovery import build
 from datetime import datetime
 drive_service = build('drive', 'v3', credentials=credentials)
+
+class LRTensorBoard(TensorBoard):
+    def __init__(self, log_dir):  # add other arguments to __init__ if you need
+        super().__init__(log_dir=log_dir)
+
+    def on_epoch_end(self, epoch, logs=None):
+        logs.update({'lr': K.eval(self.model.optimizer.lr)})
+        super().on_epoch_end(epoch, logs)
+
 def savemodel(name):
 	  file_metadata = {
 	  'name': name+'.json',
@@ -154,6 +164,14 @@ class ExperienceReplay(object):
 
         return inputs, targets
 
+def write_log(callback, names, logs, batch_no):
+    for name, value in zip(names, logs):
+        summary = tf.Summary()
+        summary_value = summary.value.add()
+        summary_value.simple_value = value
+        summary_value.tag = name
+        callback.writer.add_summary(summary, batch_no)
+        callback.writer.flush()
 
 if __name__ == "__main__":
     portfolio_list = argv[1]
@@ -185,10 +203,16 @@ if __name__ == "__main__":
     model = MarketModelBuilder(join(BASE_DIR, "models", "model.h5") if model_filename == None else join(BASE_DIR, "models", model_filename + ".h5")).getModel()
     sgd = SGD(lr = 0.001, decay = 1e-6, momentum = 0.9, nesterov = True)
     model.compile(loss='mse', optimizer='rmsprop')
-    tensorboard = TensorBoard(log_dir='./logs', histogram_freq=1, batch_size=1, write_graph=True, write_grads=True, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
+    #tensorboard = TensorBoard(log_dir='./logs', histogram_freq=1, batch_size=1, write_graph=True, write_grads=True, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
     # Initialize experience replay object
     exp_replay = ExperienceReplay(max_memory = max_memory, discount = discount)
+
+		log_path = './logs'
+		callback = TensorBoard(log_path)
+		callback.set_model(model)
+		train_names = ['train_loss', 'train_mae']
+		val_names = ['val_loss', 'val_mae']
 
     # Train
     win_cnt = 0
@@ -222,7 +246,7 @@ if __name__ == "__main__":
 
             # apply action, get rewards and new state
             input_t, reward, game_over, info = env.step(action)
-            print("input_t:{},reward:{}, game_over:{}, info:{}".format(input_t, reward, game_over, info))
+            #print("input_t:{},reward:{}, game_over:{}, info:{}".format(input_t, reward, game_over, info))
             cumReward += reward
 
             if env.actions[action] == "LONG" or env.actions[action] == "SHORT":
@@ -238,6 +262,7 @@ if __name__ == "__main__":
             inputs, targets = exp_replay.get_batch(model, batch_size=batch_size)
 
             loss += model.train_on_batch(inputs, targets)
+            write_log(callback, train_names, loss, steps)
 
         if cumReward > 0 and game_over:
             win_cnt += 1
