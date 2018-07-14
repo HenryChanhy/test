@@ -34,51 +34,31 @@ class LRTensorBoard(TensorBoard):
         super().on_epoch_end(epoch, logs)
 
 def savemodel(name):
-		items = []
-		file_metadata = {'name': name+'.json','mimeType': 'text/plain','modifiedTime': datetime.utcnow().isoformat() + 'Z'}
-	  #obj.to_csv("/tmp/"+name+".csv",encoding = 'utf-8')
-	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".json",
-	                        mimetype='text/plain',
-	                        resumable=True)
-	  newmodel = True
-	  for model in models:
-	  		if file_metadata['name'] == model['name']:
-	  				newmodel = False
-	  				created = drive_service.files().update(body=file_metadata,media_body=media,fileId=model['id'],fields='id, modifiedTime').execute()
-
-	  # created = drive_service.files().update(body=file_metadata,
-	  #                                      media_body=media,
-	  #                                      fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U',
-	  #                                      fields='id, modifiedTime').execute()
-	  if newmodel :
-	 			created = drive_service.files().create(body=file_metadata,
-	                                       media_body=media,
-	                                       fields='id, modifiedTime').execute()
-	  items.append({'name':file_metadata['name'],'id':created.get('id')})
-	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.json',created.get('id'),created.get('modifiedTime')))
-	  file_metadata = {
-	  'name': name+'.h5',
-	  'mimeType': 'text/plain',
-	  'modifiedTime': datetime.now().isoformat() + 'Z'
-	  }
-	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".h5",
-	                        mimetype='text/plain',
-	                        resumable=True)
-	  for model in models:
-	  		if file_metadata['name'] == model['name']:
-	  				newmodel = False
-	  				created = drive_service.files().update(body=file_metadata,media_body=media,fileId=model['id'],fields='id, modifiedTime').execute()
-	  # created1 = drive_service.files().update(body=file_metadata,
-	  #                                      media_body=media,
-	  #                                      fileId='1zLpn4YKgwBBzPicaRguMOaJ3sAIZkC0W',
-	  #                                      fields='id, modifiedTime').execute()
-	  if newmodel :
-	  		created1 = drive_service.files().create(body=file_metadata,
-	                                       media_body=media,
-	                                       fields='id, modifiedTime').execute()
-	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created1.get('id'),created1.get('modifiedTime')))
-	  items.append({'name':file_metadata['name'],'id':created1.get('id')})
-	  return items
+	items = []
+	file_metadata = {'name': name+'.json','mimeType': 'text/plain','modifiedTime': datetime.utcnow().isoformat() + 'Z'}
+	media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".json",mimetype='text/plain',resumable=True)
+	newmodel = True
+	for model in models:
+		if file_metadata['name'] == model['name']:
+			newmodel = False
+			created = drive_service.files().update(body=file_metadata,media_body=media,fileId=model['id'],fields='id, modifiedTime').execute()
+	if newmodel == True:
+		created = drive_service.files().create(body=file_metadata,media_body=media,fields='id, modifiedTime').execute()
+	items.append({'name':file_metadata['name'],'id':created.get('id')})
+	print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.json',created.get('id'),created.get('modifiedTime')))
+	file_metadata = {'name': name+'.h5','mimeType': 'text/plain','modifiedTime': datetime.now().isoformat() + 'Z'}
+	media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".h5",mimetype='text/plain',resumable=True)
+	for model in models:
+		if file_metadata['name'] == model['name']:
+			newmodel = False
+			created = drive_service.files().update(body=file_metadata,media_body=media,fileId=model['id'],fields='id, modifiedTime').execute()
+	if newmodel == True:
+		created1 = drive_service.files().create(body=file_metadata,
+                                     media_body=media,
+                                     fields='id, modifiedTime').execute()
+	print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created1.get('id'),created1.get('modifiedTime')))
+	items.append({'name':file_metadata['name'],'id':created1.get('id')})
+	return items
 
 def loaddate(id,filename):
 	  request = drive_service.files().get_media(fileId=id)
