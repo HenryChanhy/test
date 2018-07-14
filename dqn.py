@@ -33,11 +33,18 @@ def savemodel(name):
 	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".json",
 	                        mimetype='text/plain',
 	                        resumable=True)
+	  newmodel = True
+	  for model in models:
+	  		if file_metadata['name'] == model['name']:
+	  				newmodel = False
+	  				created = drive_service.files().update(body=file_metadata,media_body=media,fileId=model['id'],fields='id, modifiedTime').execute()
+
 	  # created = drive_service.files().update(body=file_metadata,
 	  #                                      media_body=media,
 	  #                                      fileId='12Fp4_KYdHc_RxYgz3Gz4vGQMNYM4FC7U',
 	  #                                      fields='id, modifiedTime').execute()
-	 	created = drive_service.files().insert(body=file_metadata,
+	  if newmodel :
+	 			created = drive_service.files().insert(body=file_metadata,
 	                                       media_body=media,
 	                                       fields='id, modifiedTime').execute()
 	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.json',created.get('id'),created.get('modifiedTime')))
@@ -49,11 +56,16 @@ def savemodel(name):
 	  media = MediaFileUpload("/content/stock_market_reinforcement_learning/models/"+name+".h5",
 	                        mimetype='text/plain',
 	                        resumable=True)
+	  for model in models:
+	  		if file_metadata['name'] == model['name']:
+	  				newmodel = False
+	  				created = drive_service.files().update(body=file_metadata,media_body=media,fileId=model['id'],fields='id, modifiedTime').execute()
 	  # created1 = drive_service.files().update(body=file_metadata,
 	  #                                      media_body=media,
 	  #                                      fileId='1zLpn4YKgwBBzPicaRguMOaJ3sAIZkC0W',
 	  #                                      fields='id, modifiedTime').execute()
-	  created1 = drive_service.files().insert(body=file_metadata,
+	  if newmodel :
+	  		created1 = drive_service.files().insert(body=file_metadata,
 	                                       media_body=media,
 	                                       fields='id, modifiedTime').execute()
 	  print('Filename:{} File ID: {} modifiedTime:{}'.format(name+'.h5',created1.get('id'),created1.get('modifiedTime')))
@@ -69,9 +81,7 @@ def loaddate(id,filename):
 		    # _ is a placeholder for a progress object that we ignore.
 		    # (Our file is small, so we skip reporting progress.)
 		    _, done = downloader.next_chunk()
-
 	  fh.seek(0)
-
 	  #print('Downloaded file contents are: {}'.format(downloaded.read()))
 	  return fh
 
@@ -86,6 +96,7 @@ def restoremodle():
       for item in items:
 	        loaddate(item['id'],item['name'])
 	        print('restoring model {0} ({1}) {2}'.format(item['name'], item['id'], item['modifiedTime']))
+      return items
 
 class bcolors:
     HEADER = "\033[95m"
@@ -147,7 +158,7 @@ class ExperienceReplay(object):
 if __name__ == "__main__":
     portfolio_list = argv[1]
     model_filename = argv[2] if len(argv) > 2 else None
-    restoremodle()
+    models = restoremodle()
     instruments = {}
     f = codecs.open(portfolio_list, "r", "utf-8")
 
@@ -174,8 +185,7 @@ if __name__ == "__main__":
     model = MarketModelBuilder(join(BASE_DIR, "models", "model.h5") if model_filename == None else join(BASE_DIR, "models", model_filename + ".h5")).getModel()
     sgd = SGD(lr = 0.001, decay = 1e-6, momentum = 0.9, nesterov = True)
     model.compile(loss='mse', optimizer='rmsprop')
-
-		tensorboard =TensorBoard(log_dir='./logs', histogram_freq=1, batch_size=1, write_graph=True, write_grads=True, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
+    tensorboard = TensorBoard(log_dir='./logs', histogram_freq=1, batch_size=1, write_graph=True, write_grads=True, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
     # Initialize experience replay object
     exp_replay = ExperienceReplay(max_memory = max_memory, discount = discount)
