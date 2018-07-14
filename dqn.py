@@ -207,12 +207,11 @@ if __name__ == "__main__":
 
     # Initialize experience replay object
     exp_replay = ExperienceReplay(max_memory = max_memory, discount = discount)
-
-		log_path = './logs'
-		callback = TensorBoard(log_path)
-		callback.set_model(model)
-		train_names = ['train_loss', 'train_mae']
-		val_names = ['val_loss', 'val_mae']
+    log_path = './logs'
+    callback = TensorBoard(log_path)
+    callback.set_model(model)
+    train_names = ['train_loss', 'train_mae']
+    val_names = ['val_loss', 'val_mae']
 
     # Train
     win_cnt = 0
