@@ -51,7 +51,7 @@ def savemodel(name):
 	for model in models:
 		if file_metadata['name'] == model['name']:
 			newmodel = False
-			created = drive_service.files().update(body=file_metadata,media_body=media,fileId=model['id'],fields='id, modifiedTime').execute()
+			created1 = drive_service.files().update(body=file_metadata,media_body=media,fileId=model['id'],fields='id, modifiedTime').execute()
 	if newmodel == True:
 		created1 = drive_service.files().create(body=file_metadata,
                                      media_body=media,
