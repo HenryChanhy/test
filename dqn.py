@@ -259,9 +259,9 @@ if __name__ == "__main__":
 
             # adapt model
             inputs, targets = exp_replay.get_batch(model, batch_size=batch_size)
-
-            loss += model.train_on_batch(inputs, targets)
-            write_log(callback, train_names, loss, steps)
+            logs = model.train_on_batch(inputs, targets)
+            loss += logs
+            write_log(callback, train_names, logs, steps)
 
         if cumReward > 0 and game_over:
             win_cnt += 1
