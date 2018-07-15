@@ -152,10 +152,10 @@ if __name__ == "__main__":
 
     f.close()
 
-    env = MarketEnv(target_symbols=list(instruments.keys()), input_symbols = [], 
-        start_date="1980-01-01", 
-        end_date="2018-06-29", 
+    env = MarketEnv(target_symbols=list(instruments.keys()), input_symbols = [],
+        start_date="1980-01-01",
+        end_date="2018-06-29",
         sudden_death=-1.0)
 
     pg = PolicyGradient(env, discount = 0.9, model_filename=model_filename, history_filename=history_filename)
-    pg.train(verbose = 0)
+    pg.train(verbose = 1)
