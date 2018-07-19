@@ -158,4 +158,4 @@ if __name__ == "__main__":
         sudden_death=-1.0)
 
     pg = PolicyGradient(env, discount = 0.9, model_filename=model_filename, history_filename=history_filename)
-    pg.train(verbose = 0)
+    pg.train(verbose = 0MN)
