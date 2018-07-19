@@ -18,7 +18,7 @@ data = getStockDataVec(stock_name)
 l = len(data) - 1
 batch_size = 32
 
-for e in xrange(episode_count + 1):
+for e in range(episode_count + 1):
 	print("Episode " + str(e) + "/" + str(episode_count))
 	state = getState(data, 0, window_size + 1)
 
