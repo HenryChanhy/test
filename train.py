@@ -34,7 +34,7 @@ for e in xrange(episode_count + 1):
 
 		if action == 1: # buy
 			agent.inventory.append(data[t])
-			print "Buy: " + formatPrice(data[t])
+			print ("Buy: " + formatPrice(data[t]))
 
 		elif action == 2 and len(agent.inventory) > 0: # sell
 			bought_price = agent.inventory.pop(0)
